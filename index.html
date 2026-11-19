@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Controle de Demandas - Full Stack</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 820px;
+      margin: 40px auto;
+      padding: 0 16px;
+      background: #f5f7fa;
+      color: #1f2937;
+    }
+    h1 { margin-bottom: 8px; }
+    form {
+      display: grid;
+      grid-template-columns: 2fr 1.5fr 1fr 1fr auto;
+      gap: 8px;
+      background: #ffffff;
+      padding: 16px;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+    }
+    input, select, button {
+      padding: 8px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    button {
+      background: #1d4ed8;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover { background: #1e40af; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    th { background: #f1f5f9; }
+  </style>
+</head>
+<body>
+  <h1>Controle de Demandas Operacionais</h1>
+  <p>Interface Front-end integrada à API Python e banco SQL.</p>
+
+  <form id="form-demanda">
+    <input type="text" id="titulo" placeholder="Título da demanda" required />
+    <input type="text" id="area" placeholder="Área (ex.: Dados, Finanças)" required />
+    <input type="number" id="custo" step="0.01" min="0" placeholder="Custo (R$)" required />
+    <select id="status">
+      <option value="Pendente">Pendente</option>
+      <option value="Em Andamento">Em Andamento</option>
+      <option value="Concluído">Concluído</option>
+    </select>
+    <button type="submit">Adicionar</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Título</th>
+        <th>Área</th>
+        <th>Custo (R$)</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="lista-demandas"></tbody>
+  </table>
+
+  <script>
+    const API_URL = "/api/demandas";
+
+    async function carregarDemandas() {
+      const res = await fetch(API_URL);
+      const dados = await res.json();
+      const tbody = document.getElementById("lista-demandas");
+      tbody.innerHTML = "";
+
+      dados.forEach((item) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${item.id}</td>
+          <td>${item.titulo}</td>
+          <td>${item.area}</td>
+          <td>R$ ${Number(item.custo_estimado).toFixed(2)}</td>
+          <td>
+            <select onchange="alterarStatus(${item.id}, this.value)">
+              <option value="Pendente" ${item.status === "Pendente" ? "selected" : ""}>Pendente</option>
+              <option value="Em Andamento" ${item.status === "Em Andamento" ? "selected" : ""}>Em Andamento</option>
+              <option value="Concluído" ${item.status === "Concluído" ? "selected" : ""}>Concluído</option>
+            </select>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function alterarStatus(id, status) {
+      await fetch(`${API_URL}/${id}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+      carregarDemandas();
+    }
+
+    document.getElementById("form-demanda").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const payload = {
+        titulo: document.getElementById("titulo").value,
+        area: document.getElementById("area").value,
+        custo_estimado: document.getElementById("custo").value,
+        status: document.getElementById("status").value,
+      };
+
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.ok) {
+        e.target.reset();
+        carregarDemandas();
+      }
+    });
+
+    carregarDemandas();
+  </script>
+</body>
+</html>
