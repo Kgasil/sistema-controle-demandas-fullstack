@@ -47,3 +47,16 @@ python app.py
 ```
 
 Open http://127.0.0.1:5000. The app creates `demandas.db`; the separate SQL file illustrates sample data and reporting. Local demo only: do not expose publicly or store real business data without authentication and production controls.
+
+---
+
+## Testes automatizados / Automated tests
+
+```bash
+python -m pip install -r requirements.txt
+python -m unittest -v test_app
+```
+
+Os testes utilizam um banco temporário para verificar cadastro, atualização de status e entradas inválidas, sem alterar o banco principal. / Tests use a temporary database to check creation, status updates and invalid inputs without modifying the main database.
+
+**Limitação de segurança / Security limitation:** a interface ainda precisa substituir a inserção de dados de usuário via `innerHTML` por operações DOM seguras. Não publique esta demonstração na internet. / The interface still needs safe DOM rendering for user-provided text. Do not expose this demo publicly.
