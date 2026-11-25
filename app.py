@@ -1,8 +1,11 @@
 import sqlite3
+import math
+from pathlib import Path
 from flask import Flask, jsonify, request, send_from_directory
 
-app = Flask(__name__, static_folder=".")
-DB_NAME = "demandas.db"
+BASE_DIR = Path(__file__).resolve().parent
+app = Flask(__name__, static_folder=None)
+DB_NAME = BASE_DIR / "demandas.db"
 
 
 def get_connection():
@@ -29,7 +32,7 @@ def init_db():
 
 @app.route("/")
 def index():
-    return send_from_directory(".", "index.html")
+    return send_from_directory(BASE_DIR, "index.html")
 
 
 @app.route("/api/demandas", methods=["GET"])
@@ -41,17 +44,21 @@ def listar_demandas():
 
 @app.route("/api/demandas", methods=["POST"])
 def criar_demanda():
-    dados = request.get_json(silent=True) or {}
+    dados = request.get_json(silent=True)
+    if not isinstance(dados, dict):
+        return jsonify({"erro": "Envie um objeto JSON válido."}), 400
     titulo = str(dados.get("titulo", "")).strip()
     area = str(dados.get("area", "")).strip()
     status = str(dados.get("status", "Pendente")).strip()
 
+    if status not in {"Pendente", "Em Andamento", "Concluído"}:
+        return jsonify({"erro": "Status inválido."}), 400
     if not titulo or not area:
         return jsonify({"erro": "Título e área são obrigatórios."}), 400
 
     try:
         custo = float(dados.get("custo_estimado", 0))
-        if custo < 0:
+        if not math.isfinite(custo) or custo < 0:
             raise ValueError()
     except (TypeError, ValueError):
         return jsonify({"erro": "Custo estimado deve ser um número válido."}), 400
@@ -69,7 +76,9 @@ def criar_demanda():
 
 @app.route("/api/demandas/<int:demanda_id>/status", methods=["PATCH"])
 def atualizar_status(demanda_id):
-    dados = request.get_json(silent=True) or {}
+    dados = request.get_json(silent=True)
+    if not isinstance(dados, dict):
+        return jsonify({"erro": "Envie um objeto JSON válido."}), 400
     novo_status = str(dados.get("status", "")).strip()
 
     if novo_status not in {"Pendente", "Em Andamento", "Concluído"}:
@@ -89,4 +98,4 @@ def atualizar_status(demanda_id):
 
 if __name__ == "__main__":
     init_db()
-    app.run(debug=True, port=5000)
+    app.run(host="127.0.0.1", debug=False, port=5000)
