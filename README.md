@@ -12,28 +12,38 @@ Projeto demonstrativo de aplicação **Full Stack** unindo **modelagem relaciona
 
 ---
 
-## Como Executar Localmente
+## Como executar localmente
 
-1. Instale o Flask:
-   ```bash
-   pip install flask
+Com Python 3 instalado, na pasta do projeto:
+
+```bash
+python -m pip install flask
+python app.py
+```
+
+Acesse http://127.0.0.1:5000. O aplicativo cria `demandas.db` automaticamente; o SQL separado é um exemplo com dados fictícios. Não use dados corporativos reais nem exponha este protótipo sem autenticação e controles de produção.
+
 ---
 
 <a id="english-version"></a>
 
-# Demand Control System — Full Stack (SQL, Python & Web)[cite: 10]
+# Demand Control System — Full Stack (SQL, Python & Web)
 
-Demonstrative Full Stack application combining **relational SQL modeling**, a **Python (Flask) REST API**, and a **web interface (HTML, CSS, and JavaScript)** for logging, estimating costs, and tracking operational demands[cite: 10].
+Demonstrative Full Stack application combining **relational SQL modeling**, a **Python (Flask) REST API**, and a **web interface (HTML, CSS, and JavaScript)** for logging, estimating costs, and tracking operational demands.
 
-## Project Architecture[cite: 10]
+## Project Architecture
 
-* `schema_e_consultas.sql`: Defines the demands table, sample initial seed data, and aggregated queries by department and status[cite: 10].
-* `app.py`: REST API featuring `GET /api/demandas`, `POST /api/demandas`, and `PATCH /api/demandas/<id>/status` endpoints, input validation, and SQLite persistence[cite: 10].
-* `index.html`: Web interface for creating new demands, viewing tabular records, and updating statuses in real time[cite: 10].
+* `schema_e_consultas.sql`: Defines the demands table, sample initial seed data, and aggregated queries by department and status.
+* `app.py`: REST API featuring `GET /api/demandas`, `POST /api/demandas`, and `PATCH /api/demandas/<id>/status` endpoints, input validation, and SQLite persistence.
+* `index.html`: Web interface for creating new demands, viewing tabular records, and updating statuses in real time.
 
-## How to Run Locally[cite: 10]
+## Run locally
 
-1. Install Flask[cite: 10]:
+From the project folder, with Python 3 installed:
 
 ```bash
-pip install flask
+python -m pip install flask
+python app.py
+```
+
+Open http://127.0.0.1:5000. The app creates `demandas.db`; the separate SQL file illustrates sample data and reporting. Local demo only: do not expose publicly or store real business data without authentication and production controls.
