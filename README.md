@@ -1,5 +1,10 @@
 # Sistema de Controle de Demandas — Full Stack (SQL, Python & Web)
 
+<!-- kg-personal-portfolio-v1 -->
+
+[KG Professional Portfolio 1.0 — Portfólio pessoal / Personal portfolio](https://kgasil.github.io/portfolio/) · [Estudo de caso / Case study](https://kgasil.github.io/portfolio/cases.html#demands)
+
+
 Projeto demonstrativo de aplicação **Full Stack** unindo **modelagem relacional em SQL**, **API REST em Python (Flask)** e **interface web (HTML, CSS e JavaScript)** para registro, precificação estimada e acompanhamento de demandas operacionais.
 > 🌐 *English version available below:* [Jump to English Version](#english-version)
 ---
